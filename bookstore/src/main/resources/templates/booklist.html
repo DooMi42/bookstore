@@ -3,11 +3,12 @@
 
 <head>
     <title>Book List</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
 </head>
 
-<body>
-    <h1>Book List</h1>
-    <table>
+<body class="container mt-5">
+    <h1 class="text-center">Book List</h1>
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>Title</th>
@@ -15,6 +16,7 @@
                 <th>Publication Year</th>
                 <th>ISBN</th>
                 <th>Price</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -24,14 +26,16 @@
                 <td th:text="${book.publicationYear}"></td>
                 <td th:text="${book.isbn}"></td>
                 <td th:text="${book.price}"></td>
-
                 <td>
-                    <a th:href="@{/delete/{id}(id=${book.id})}">Delete</a>
+                    <a th:href="@{/edit/{id}(id=${book.id})}" class="btn btn-primary">Edit</a>
+                    <a th:href="@{/delete/{id}(id=${book.id})}" class="btn btn-danger">Delete</a>
                 </td>
-
             </tr>
         </tbody>
     </table>
+    <div class="text-center">
+        <a th:href="@{/add}" class="btn btn-success">Add New Book</a>
+    </div>
 </body>
 
 </html>
