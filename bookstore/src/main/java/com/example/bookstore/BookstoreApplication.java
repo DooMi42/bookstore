@@ -2,6 +2,8 @@ package com.example.bookstore;
 
 import com.example.bookstore.domain.Book;
 import com.example.bookstore.domain.BookRepository;
+import com.example.bookstore.domain.Category;
+import com.example.bookstore.domain.CategoryRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,17 +12,25 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class BookstoreApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(BookstoreApplication.class, args);
-	}
-	
-	@Bean
-    public CommandLineRunner demo(BookRepository repository) {
-        return (args) -> {
-            repository.save(new Book("The Hobbit", "J.R.R. Tolkien", 1937, "978-0547928227", 10.99));
-            repository.save(new Book("1984", "George Orwell", 1949, "978-0451524935", 9.99));
-            repository.save(new Book("Pride and Prejudice", "Jane Austen", 1813, "978-1503290563", 8.99));
-        };
+    public static void main(String[] args) {
+        SpringApplication.run(BookstoreApplication.class, args);
     }
 
+    @Bean
+    public CommandLineRunner demo(BookRepository bookRepository, CategoryRepository categoryRepository) {
+        return (args) -> {
+            // Insert categories if not present
+            if (categoryRepository.count() == 0) {
+                Category fiction = new Category("Fiction");
+                Category nonFiction = new Category("Non-Fiction");
+                categoryRepository.save(fiction);
+                categoryRepository.save(nonFiction);
+
+                // Insert books with category
+                bookRepository
+                        .save(new Book("A Farewell to Arms", "Ernest Hemingway", 1929, "1232323-21", 10.99, fiction));
+                bookRepository.save(new Book("Animal Farm", "George Orwell", 1945, "2212343-5", 8.99, fiction));
+            }
+        };
+    }
 }
