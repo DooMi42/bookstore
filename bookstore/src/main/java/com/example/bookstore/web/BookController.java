@@ -22,6 +22,11 @@ public class BookController {
         this.categoryRepository = categoryRepository;
     }
 
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login";
+    }
+
     @GetMapping("/booklist")
     public String listBooks(Model model) {
         model.addAttribute("books", bookRepository.findAll());
