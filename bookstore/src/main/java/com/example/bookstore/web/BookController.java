@@ -8,17 +8,12 @@ import com.example.bookstore.domain.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@Controller // Use @Controller instead of @RestController
 public class BookController {
 
     private final BookRepository bookRepository;
-
     private final CategoryRepository categoryRepository;
 
     @Autowired
@@ -30,13 +25,13 @@ public class BookController {
     @GetMapping("/booklist")
     public String listBooks(Model model) {
         model.addAttribute("books", bookRepository.findAll());
-        return "booklist"; // Thymeleaf template name
+        return "booklist"; // Return Thymeleaf template
     }
 
     @GetMapping("/add")
     public String addBookForm(Model model) {
         model.addAttribute("book", new Book());
-        model.addAttribute("categories", categoryRepository.findAll()); // Add categories to model
+        model.addAttribute("categories", categoryRepository.findAll());
         return "addbook";
     }
 
@@ -54,8 +49,8 @@ public class BookController {
     public String editBook(@PathVariable("id") Long id, Model model) {
         Book book = bookRepository.findById(id).orElse(null);
         model.addAttribute("book", book);
-        model.addAttribute("categories", categoryRepository.findAll()); // Ensure categories are available
-        return "addbook"; // or "editbook.html" if separate file
+        model.addAttribute("categories", categoryRepository.findAll());
+        return "addbook";
     }
 
     @GetMapping("/delete/{id}")
@@ -63,5 +58,4 @@ public class BookController {
         bookRepository.deleteById(id);
         return "redirect:/booklist";
     }
-
 }

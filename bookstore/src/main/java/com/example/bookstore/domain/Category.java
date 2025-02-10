@@ -1,5 +1,6 @@
 package com.example.bookstore.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -11,6 +12,7 @@ public class Category {
 
     private String name;
 
+    @JsonIgnore // Prevent infinite recursion
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<Book> books;
 
