@@ -9,6 +9,8 @@
 <body class="container">
     <h2 class="mt-5">Login</h2>
     <form method="post" action="/login">
+        <!-- CSRF token: required when CSRF protection is enabled -->
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
         <div class="mb-3">
             <label>Username</label>
             <input type="text" name="username" class="form-control" />

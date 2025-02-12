@@ -5,6 +5,8 @@ import com.example.bookstore.domain.BookRepository;
 import com.example.bookstore.domain.Category;
 import com.example.bookstore.domain.CategoryRepository;
 
+import java.security.Principal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,9 +30,11 @@ public class BookController {
     }
 
     @GetMapping("/booklist")
-    public String listBooks(Model model) {
+    public String listBooks(Model model, Principal principal) {
         model.addAttribute("books", bookRepository.findAll());
-        return "booklist"; // Return Thymeleaf template
+        // Add the logged-in username so it can be displayed in the view
+        model.addAttribute("username", principal.getName());
+        return "booklist"; // This refers to your Thymeleaf template
     }
 
     @GetMapping("/add")
