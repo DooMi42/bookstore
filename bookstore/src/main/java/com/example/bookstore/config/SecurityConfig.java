@@ -1,5 +1,6 @@
 package com.example.bookstore.config;
 
+import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,6 +21,8 @@ public class SecurityConfig {
                                                 .requestMatchers("/delete/**").hasRole("ADMIN")
                                                 // require authentication for all other URLs
                                                 .anyRequest().authenticated())
+                                // enable HTTP Basic authentication for REST API calls
+                                .httpBasic(withDefaults())
                                 .formLogin(form -> form
                                                 .loginPage("/login")
                                                 .defaultSuccessUrl("/booklist", true)
