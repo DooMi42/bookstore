@@ -1,0 +1,12 @@
+com\example\bookstore\domain\Book.class
+com\example\bookstore\domain\Category.class
+com\example\bookstore\service\AppUserDetailsService.class
+com\example\bookstore\web\BookRestController.class
+com\example\bookstore\BookstoreApplication.class
+com\example\bookstore\domain\CategoryRepository.class
+com\example\bookstore\domain\AppUserRepository.class
+com\example\bookstore\domain\BookRepository.class
+com\example\bookstore\web\BookController.class
+com\example\bookstore\domain\AppUser.class
+com\example\bookstore\DataLoaderConfig.class
+com\example\bookstore\config\SecurityConfig.class
