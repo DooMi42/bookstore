@@ -5,21 +5,23 @@ services:
     plan: free
     healthCheckPath: /actuator/health
     envVars:
+      - key: PORT
+        value: 5432
       - key: SPRING_PROFILES_ACTIVE
         value: prod
       - key: SPRING_DATASOURCE_URL
         fromDatabase:
-          name: bookstore-app
+          name: dbbookstore_8k5h
           property: connectionString
       - key: SPRING_DATASOURCE_USERNAME
         fromDatabase:
-          name: bookstore-app
+          name: dbbookstore_8k5h
           property: user
       - key: SPRING_DATASOURCE_PASSWORD
         fromDatabase:
-          name: bookstore-app
+          name: dbbookstore_8k5h
           property: password
 
 databases:
-  - name: bookstore-app
+  - name: dbbookstore_8k5h
     plan: free

@@ -21,7 +21,7 @@ COPY --from=build /app/target/*.jar app.jar
 # Expose port
 EXPOSE 8080
 
-# NOTE: We're setting the profile via environment variable, not in the properties file
+# Set environment variable for profile
 ENV SPRING_PROFILES_ACTIVE=prod
 
 # Run the application
