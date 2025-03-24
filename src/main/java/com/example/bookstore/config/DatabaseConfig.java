@@ -1,40 +1,44 @@
 package main.java.com.example.bookstore.config;
 
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+
 import javax.sql.DataSource;
-import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
 @Profile("prod")
 public class DatabaseConfig {
 
-    @Value("${spring.datasource.url}")
-    private String url;
+    @Value("${SPRING_DATASOURCE_URL:}")
+    private String dbUrl;
 
-    @Value("${spring.datasource.username}")
+    @Value("${SPRING_DATASOURCE_USERNAME:}")
     private String username;
 
-    @Value("${spring.datasource.password}")
+    @Value("${SPRING_DATASOURCE_PASSWORD:}")
     private String password;
 
     @Bean
+    @Primary
     public DataSource dataSource() {
         HikariDataSource dataSource = new HikariDataSource();
 
-        // Make sure URL starts with jdbc:postgresql://
-        String jdbcUrl = url;
-        if (!jdbcUrl.startsWith("jdbc:")) {
-            jdbcUrl = "jdbc:" + jdbcUrl;
+        // Ensure URL has jdbc: prefix
+        if (dbUrl != null && !dbUrl.isEmpty()) {
+            if (!dbUrl.startsWith("jdbc:")) {
+                dbUrl = "jdbc:" + dbUrl;
+            }
         }
 
-        dataSource.setJdbcUrl(jdbcUrl);
+        dataSource.setJdbcUrl(dbUrl);
         dataSource.setUsername(username);
         dataSource.setPassword(password);
         dataSource.setDriverClassName("org.postgresql.Driver");
+        dataSource.setMaximumPoolSize(5);
 
         return dataSource;
     }

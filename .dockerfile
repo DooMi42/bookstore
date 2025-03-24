@@ -21,8 +21,5 @@ COPY --from=build /app/target/*.jar app.jar
 # Expose port
 EXPOSE 8080
 
-# Set environment variable for profile
-ENV SPRING_PROFILES_ACTIVE=prod
-
-# Run the application
-ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-jar", "/app/app.jar"]
+# Run the application with explicit spring.profiles.active and PORT
+ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-Dserver.port=8080", "-jar", "/app/app.jar"]
