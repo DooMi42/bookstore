@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: bookstore
+    env: docker
+    plan: free
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: bookstore-app
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: bookstore-app
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: bookstore-app
+          property: password
+
+databases:
+  - name: bookstore-app
+    plan: free

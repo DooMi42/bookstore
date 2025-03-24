@@ -1,25 +1,29 @@
-FROM eclipse-temurin:17-jdk-alpine as build
-WORKDIR /workspace/app
+FROM maven:3.9-eclipse-temurin-17-alpine AS build
 
-# Copy maven executable and pom.xml
-COPY mvnw .
-COPY .mvn .mvn
+WORKDIR /app
 COPY pom.xml .
+# This will download all dependencies and cache them in a Docker layer
+RUN mvn dependency:go-offline -B
 
-# Make mvnw executable
-RUN chmod +x ./mvnw
+COPY src ./src
+RUN mvn package -DskipTests
 
-# Build dependencies (this layer can be cached)
-RUN ./mvnw dependency:resolve
-
-# Copy the project source
-COPY src src
-
-# Package the application
-RUN ./mvnw package -DskipTests
-
-# Create the final image
 FROM eclipse-temurin:17-jre-alpine
-VOLUME /tmp
-COPY --from=build /workspace/app/target/*.jar app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
+
+WORKDIR /app
+
+# Add container support
+RUN addgroup -S spring && adduser -S spring -G spring
+USER spring:spring
+
+# Copy the JAR file
+COPY --from=build /app/target/*.jar app.jar
+
+# Expose port
+EXPOSE 8080
+
+# Set environment variables with defaults
+ENV SPRING_PROFILES_ACTIVE=prod
+
+# Run the application
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
