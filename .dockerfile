@@ -2,7 +2,6 @@ FROM maven:3.9-eclipse-temurin-17-alpine AS build
 
 WORKDIR /app
 COPY pom.xml .
-# This will download all dependencies and cache them in a Docker layer
 RUN mvn dependency:go-offline -B
 
 COPY src ./src
@@ -22,8 +21,8 @@ COPY --from=build /app/target/*.jar app.jar
 # Expose port
 EXPOSE 8080
 
-# Set environment variables with defaults
+# NOTE: We're setting the profile via environment variable, not in the properties file
 ENV SPRING_PROFILES_ACTIVE=prod
 
 # Run the application
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-jar", "/app/app.jar"]
