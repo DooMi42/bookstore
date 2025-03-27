@@ -25,22 +25,59 @@ public class DatabaseConfig {
     @Bean
     @Primary
     public DataSource dataSource() {
-        // Log what we're trying to do
-        System.out.println("Creating PostgreSQL data source with URL: " + databaseUrl);
+        // Parse the Render-provided URL to construct a proper JDBC URL
+        String jdbcUrl;
 
-        String jdbcUrl = databaseUrl;
-        if (jdbcUrl != null && !jdbcUrl.startsWith("jdbc:")) {
-            jdbcUrl = "jdbc:" + jdbcUrl;
-            System.out.println("Modified URL to: " + jdbcUrl);
+        if (databaseUrl != null && !databaseUrl.isEmpty()) {
+            if (databaseUrl.contains("@")) {
+                // Format: postgresql://username:password@hostname:port/database
+                // We need to extract parts and rebuild it properly
+                try {
+                    // Extract username:password
+                    String credentials = databaseUrl.substring(databaseUrl.indexOf("//") + 2, databaseUrl.indexOf("@"));
+
+                    // Extract host:port/database
+                    String hostDb = databaseUrl.substring(databaseUrl.indexOf("@") + 1);
+
+                    // Build proper JDBC URL
+                    jdbcUrl = "jdbc:postgresql://" + hostDb;
+
+                    // Create datasource with separate username and password
+                    HikariDataSource dataSource = new HikariDataSource();
+                    dataSource.setJdbcUrl(jdbcUrl);
+
+                    // Set credentials separately
+                    String[] userPass = credentials.split(":");
+                    if (userPass.length == 2) {
+                        dataSource.setUsername(userPass[0]);
+                        dataSource.setPassword(userPass[1]);
+                    } else {
+                        dataSource.setUsername(username);
+                        dataSource.setPassword(password);
+                    }
+
+                    dataSource.setDriverClassName("org.postgresql.Driver");
+                    dataSource.setMaximumPoolSize(5);
+                    dataSource.setMinimumIdle(1);
+                    System.out.println("Created datasource with URL: " + jdbcUrl);
+                    return dataSource;
+                } catch (Exception e) {
+                    System.err.println("Error parsing database URL: " + e.getMessage());
+                }
+            }
+
+            // Fallback - just add jdbc: prefix
+            jdbcUrl = databaseUrl.startsWith("jdbc:") ? databaseUrl : "jdbc:" + databaseUrl;
+        } else {
+            throw new IllegalStateException("Database URL is required but not provided");
         }
 
+        // Default approach
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl(jdbcUrl);
         dataSource.setUsername(username);
         dataSource.setPassword(password);
         dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setMaximumPoolSize(5);
-        dataSource.setMinimumIdle(1);
         return dataSource;
     }
 }
