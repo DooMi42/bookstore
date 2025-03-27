@@ -21,5 +21,5 @@ COPY --from=build /app/target/*.jar app.jar
 # Expose port
 EXPOSE 8080
 
-# Run the application with the correct H2 test profile
-ENTRYPOINT ["java", "-Dspring.profiles.active=prod-test", "-Dserver.port=8080", "-jar", "/app/app.jar"]
+# Run the application with PostgreSQL configuration
+ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-Dserver.port=8080", "-jar", "/app/app.jar"]

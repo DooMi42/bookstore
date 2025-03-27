@@ -1,3 +1,4 @@
+main\java\com\example\bookstore\config\DatabaseConfig.class
 com\example\bookstore\domain\Book.class
 com\example\bookstore\domain\Category.class
 com\example\bookstore\service\AppUserDetailsService.class

@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.example.bookstore.BookRepositoryTest
 -------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.093 s -- in com.example.bookstore.BookRepositoryTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.419 s -- in com.example.bookstore.BookRepositoryTest
