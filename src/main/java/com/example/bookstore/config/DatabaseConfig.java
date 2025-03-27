@@ -1,6 +1,5 @@
 package main.java.com.example.bookstore.config;
 
-import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,38 +7,39 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
 import javax.sql.DataSource;
+import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
-@Profile("prod")
+@Profile("prod") // Only load this for 'prod', not 'prod-test'
 public class DatabaseConfig {
 
-    @Value("${SPRING_DATASOURCE_URL:}")
-    private String dbUrl;
+    @Value("${SPRING_DATASOURCE_URL:#{null}}")
+    private String databaseUrl;
 
-    @Value("${SPRING_DATASOURCE_USERNAME:}")
+    @Value("${SPRING_DATASOURCE_USERNAME:#{null}}")
     private String username;
 
-    @Value("${SPRING_DATASOURCE_PASSWORD:}")
+    @Value("${SPRING_DATASOURCE_PASSWORD:#{null}}")
     private String password;
 
     @Bean
     @Primary
     public DataSource dataSource() {
-        HikariDataSource dataSource = new HikariDataSource();
-
-        // Ensure URL has jdbc: prefix
-        if (dbUrl != null && !dbUrl.isEmpty()) {
-            if (!dbUrl.startsWith("jdbc:")) {
-                dbUrl = "jdbc:" + dbUrl;
-            }
+        // Only create this if we have the necessary properties
+        if (databaseUrl == null || username == null || password == null) {
+            throw new IllegalStateException("Database connection properties not set");
         }
 
-        dataSource.setJdbcUrl(dbUrl);
+        String jdbcUrl = databaseUrl;
+        if (jdbcUrl != null && !jdbcUrl.startsWith("jdbc:")) {
+            jdbcUrl = "jdbc:" + jdbcUrl;
+        }
+
+        HikariDataSource dataSource = new HikariDataSource();
+        dataSource.setJdbcUrl(jdbcUrl);
         dataSource.setUsername(username);
         dataSource.setPassword(password);
         dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setMaximumPoolSize(5);
-
         return dataSource;
     }
 }
